@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+
+{% include head.html %}
+
+<body>
+
+<div class="container">
+
+  {% include header.html %}
+
+  {% if site.default_column == "two" %}  
+
+  <div class="page-content col-sm-8">
+    {{ content }}
+    {% include post_pagination.html %}
+  </div>
+  {% include sidebar.html %}
+
+  {% else %}
+
+  <div class="page-content">
+    <div class="wrapper">
+    {% if post.content contains '<!--more-->' %}
+        {{ post.content | split:'<!--more-->' | first }}
+    {% else %}
+        {{ content }}
+    {% endif %}
+    </div>
+  </div>
+  {% include post_pagination.html %}
+
+  {% endif %}
+  
+  {% include footer.html %}
+  
+
+  
+</div>
+
+</body>
+
+</html>
