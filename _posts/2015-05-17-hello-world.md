@@ -1,4 +1,5 @@
 ---
+layout: post
 title: Test: Hello, world!
 tags: [Announcement, Test]
 ---
