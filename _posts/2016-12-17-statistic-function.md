@@ -12,26 +12,27 @@ comments: true
 ### 单点分布：
 
 $$ f(X = x)=\begin{cases}1, & x = c\\0, & x \neq c\end{cases} $$
-</br>
+
+
 c, 为常数， 数学期望C，方差
 
 ###两点分布：
 
-$$ f(X = k)=\begin{cases}p, & \text{k=0}\\p, & \text{k=1}\end{cases} $$
-</br>
-0< p < 1, p + q = 1
+$$ f(X = k)=\begin{cases}p, & \text{k=0}\\p, & \text{k=1}\end{cases}  $$
+
+
 数学期望p, 方差pq
 
 ### 二项分布 $$B(n,p)$$:
 
 $$P(X=k)=C_n^kp^kq^{n-k}, k = 0,1,...,n$$
-</br>
+
 数学期望p,方差pq
 
 ### 泊松分布  $$P(\lambda)$$:
 
 $$P(X=k)=\frac{\lambda^k}{k!}e^{-\lambda},k = 0,1,...,n, \lambda \gt 0$$
-</br>
+
 数学期望$$\lambda$$,方差$$\lambda$$
 
 
@@ -75,36 +76,37 @@ $$ f(x)=\begin{cases}\alpha\lambda x^{\alpha-1}e^{-\lambda x^\alpha}, & x \gt 0 
 
 
 ### 伽马分布
-$$\begin{aligned}
+$$
 B(m, n) = \begin{cases}\frac{\beta^\alpha}{\Gamma{(\alpha)}}x^{\alpha-1}e^{-\beta x}, 
 & x \geq 0 \\0, & x \lt 0\end{cases}
-\end{aligned}
 $$
+
 ### 贝塔分布
-$$\begin{aligned}
-B(m, n) = \begin{cases}\frac{\Gamma(a+b)}{\Gamma(a)\Gamma{(b)}}x^{\alpha-1}(1-x)^{b-1}, & 0 < x < 1 \\0, \text{其它}\end{cases}
-\end{aligned}
 $$
+B(m, n) = \begin{cases}\frac{\Gamma(a+b)}{\Gamma(a)\Gamma{(b)}}x^{\alpha-1}(1-x)^{b-1}, & 0 < x < 1 \\0, \text{其它}\end{cases}
+$$
+
 ### 卡方分布
-$$\begin{aligned}
+$$
 f(x) = \begin{cases}\frac{1}{2^{n/2}\Gamma(n/2)}
 x^{n/2-1}e^{-x/2}, & x \ge 0 \\0, & x \lt 0\end{cases}
-\end{aligned}
 $$
+
 ### t分布
-$$\begin{aligned}
+$$
 f(x)=\begin{cases}\frac{\Gamma((n+1)/2)}{\sqrt{n\pi} \Gamma{(n/2)}}
 , & x \ge 0 \\0, & x \lt 0
-\end{cases}\end{aligned}
+\end{cases}
 $$
 ### F分布
-$$\begin{aligned}
+$$
 f(x)=\begin{cases}\frac{\Gamma((n+m)/2)}{\Gamma{(n/2)}\Gamma{(m/2)}}n^{n/2}m^{m/2}x^{n/2-1}(nx+m)^{\frac{n+m}{2}}
 , & x \ge 0 \\0, & x \lt 0
-\end{cases}\end{aligned}
+\end{cases}
 $$
 
 ### 柯西分布
+
 $$ f(x)=\frac{1}{\pi}\frac{\lambda}{\lambda^2+(x-\mu)^2}, -\infty < x < +\infty $$
 
 二维正太分布分布函数等，备注：
