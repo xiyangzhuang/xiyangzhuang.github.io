@@ -16,7 +16,7 @@ $$ f(X = x)=\begin{cases}1, & x = c\\0, & x \neq c\end{cases} $$
 
 c, 为常数， 数学期望C，方差
 
-###两点分布：
+### 两点分布：
 
 $$ f(X = k)=\begin{cases}p, & \text{k=0}\\p, & \text{k=1}\end{cases}  $$
 
@@ -54,6 +54,8 @@ $$P(X=k)=C_{k-1}^{r-1}p^rq^{k-r}, k=r,r+1,..., 0<p<1,p+q=1$$
 
 数学期望：$$\frac{r}{p}$$
 方差：$$\frac{rq}{p^2}$$
+
+<!-- more -->
 
 ### 常见连续型分布
 均匀分布
