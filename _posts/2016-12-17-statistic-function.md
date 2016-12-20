@@ -18,7 +18,7 @@ c, 为常数， 数学期望C，方差
 
 ### 两点分布：
 
-$$ f(X = k)=\begin{cases}p, & \text{k=0}\\p, & \text{k=1}\end{cases}  $$
+$$ f(X = k)=\begin{cases}p, & \text{k=0}\\q, & \text{k=1}\end{cases}  $$
 
 
 数学期望p, 方差pq
@@ -46,7 +46,7 @@ $$P(X=K) = \frac{C_M^kC_{N-M}^{n-k}}{C_N^n},k = 1,2,..., min(M,N), M \leq N $$
 
 数学期望$$\frac{nM}{N}$$
 
-方差$$\frac{nM}{N}1-\frac{M}{N}.\frac{N-n}{N-1}$$
+方差$$\frac{nM}{N}(1-\frac{M}{N}).\frac{N-n}{N-1}$$
 
 ### 帕斯卡分布
 
@@ -57,8 +57,9 @@ $$P(X=k)=C_{k-1}^{r-1}p^rq^{k-r}, k=r,r+1,..., 0<p<1,p+q=1$$
 
 <!-- more -->
 
-### 常见连续型分布
-均匀分布
+## 常见连续型分布
+
+### 均匀分布
 
 $$ f(x)=\begin{cases}\frac{1}{b-a}, & x \in (a,b)\\0, & x \notin (a,b)\end{cases} $$
 
@@ -66,7 +67,7 @@ $$ f(x)=\begin{cases}\frac{1}{b-a}, & x \in (a,b)\\0, & x \notin (a,b)\end{cases
 
 $$ f(x)=\begin{cases}\lambda e^{-\lambda x}, & x \ge 0\\0, & x \lt 0\end{cases} $$
 
-###正太分布
+### 正太分布
 
 $$ f(x)=\frac{1}{\sqrt{2\pi} \sigma}e^\frac{(x-u)^2}{2\sigma}, -\infty < x < +\infty $$
 
@@ -78,8 +79,8 @@ $$ f(x)=\begin{cases}\frac{1}{x\sigma \sqrt{2\pi}}e^\frac{(ln x-u)^2}{2\sigma}, 
 
 $$ f(x)=\begin{cases}\alpha\lambda x^{\alpha-1}e^{-\lambda x^\alpha}, & x \gt 0 \\0,& x \leq 0 \end{cases} $$
 
-数学期望：
-方差：
+数学期望：$$\Gamma(\frac{1}{\alpha}+1)\lambda^\frac{-1}{\alpha}$$
+方差：$$lambda^\frac{-1}{\alpha}\[\Gamma(\frac{2}{\alpha}+1) - \Gamma(\frac{1}{\alpha}+1)^2\]\$$
 
 
 ### 伽马分布
@@ -122,6 +123,7 @@ $$
 
 $$ f(x)=\frac{1}{\pi}\frac{\lambda}{\lambda^2+(x-\mu)^2}, -\infty < x < +\infty $$
 
-二维正太分布分布函数等，备注：
+### 二维正太分布分布函数等，备注：
+
 $$\Gamma 函数, \Gamma(\alpha)=\int_0^{+\infty} x^{\alpha-1}e^{-x}dx,\alpha \gt 0 $$
 $$B(Beta) 函数, B(p,q)=\int_0^1 x^{p-1}(1-x)^{q-1}dx,p \gt 0, q \gt 0 $$
