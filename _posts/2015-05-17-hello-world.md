@@ -8,6 +8,7 @@ tags:
 comments: true
 ---
 
+Hello zhang zhao huang!
 Traditional programmer used to, and still do, print this sentence to test whether their program work or not. So why not test again :P
 
 I use this a test blog to see whether the site works on the github.
