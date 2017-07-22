@@ -2,7 +2,7 @@
 layout: post
 title: Centos7无网络环境安装配置Opencv 
 modified: 2017-07-18
-categories: [articles, 环境配置]
+categories: [articles, 环境配置, Opencv]
 tags: 
   - 环境配置
 comments: true
