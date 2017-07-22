@@ -55,22 +55,39 @@ Opencv安装需要的库：
 >   ffmpeg （ffmpeg.x86_640:2.6.8-3.el7.nux）安装时需要的依赖库，总共需要18个依赖库：
 
 (1/18): SDL-1.2.15-14.el7.x86_64.rpm \| 204 kB
+
 (2/18): fdk-aac-0.1.4-1.x86_64.rpm \| 375 kB 
+
 (3/18):   faac-1.28-6.0.el7.nux.x86_64.rpm \| 269 kB 
+
 (4/18):   fribidi-0.19.4-6.el7.x86_64.rpm \| 63 kB 
+
 (5/18):   lame-libs-3.99.5-8.el7.x86_64.rpm \| 343 kB 
+
 (6/18):   libass-0.13.4-1.el7.x86_64.rpm \| 92 kB 
+
 (7/18):   ffmpeg-2.6.8-3.el7.nux.x86_64.rpm \| 1.5 MB 
+
 (8/18):   libvdpau-1.1-2.el7.x86_64.rpm \| 32 kB 
+
 (9/18):   libdc1394-2.2.2-3.el7.x86_64.rpm \| 121 kB 
+
 (10/18):   schroedinger-1.0.11-4.el7.x86_64.rpm \| 291 kB 
+
 (11/18):   soxr-0.1.2-1.el7.x86_64.rpm \| 77 kB 
+
 (12/18):   libavdevice-2.6.8-3.el7.nux.x86_64.rpm \| 71 kB 
+
 (13/18):   openal-soft-1.16.0-3.el7.x86_64.rpm \| 282 kB 
+
 (14/18):   libva-1.2.1-3.el7.x86_64.rpm \| 68 kB 
+
 (15/18):   x265-libs-1.9-1.el7.nux.x86_64.rpm \| 1.5 MB 
+
 (16/18):   x264-libs-0.142-11.20141221git6a301b6.el7.nux. \| 570 kB 
+
 (17/18):   xvidcore-1.3.2-5.el7.nux.x86_64.rpm \| 258 kB 
+
 (18/18):   ffmpeg-libs-2.6.8-3.el7.nux.x86_64.rpm \| 5.0 MB
 
 由于安装ffmpeg 过程中需要的依赖库较多，可以先将一台装有centos版本的服务器联网，然后用yum
