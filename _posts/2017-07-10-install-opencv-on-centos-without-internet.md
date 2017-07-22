@@ -8,17 +8,17 @@ tags:
 comments: true
 ---
 
-	总得来讲，opencv在安装过程失败，往往是因为缺少相应库。我们这里详细讨论并介绍opencv,
+  总得来讲，opencv在安装过程失败，往往是因为缺少相应库。我们这里详细讨论并介绍opencv,
 安装过程中库的依赖关系。
 
-	这里主要针对Opencv进行安装配置时，下面给出**不能正常联网时**，Opencv安装的详细过程，
+  这里主要针对Opencv进行安装配置时，下面给出**不能正常联网时**，Opencv安装的详细过程，
 并提供了软件安装过程中需要的依赖包。
 
-	**系统环境（centos 7, 服务器无联网环境）：**
+ **系统环境（centos 7, 服务器无联网环境）：**
 
 	*Linux version 3.10.0-514.el7.x86_64 (builder\@kbuilder.dev.centos.org) (gcc
-	version 4.8.5 20150623 (Red Hat 4.8.5-11) (GCC) ) \#1 SMP Tue Nov 22 16:42:41
-	UTC 2016*
+version 4.8.5 20150623 (Red Hat 4.8.5-11) (GCC) ) \#1 SMP Tue Nov 22 16:42:41
+UTC 2016*
 
 
 Opencv安装：
