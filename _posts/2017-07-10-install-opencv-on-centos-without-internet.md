@@ -2,14 +2,14 @@
 layout: post
 title: 常见统计函数 
 modified: 2016-12-17
-categories: [articles, 统计]
+categories: [articles, 环境配置]
 tags: 
-  - statistic
+  - 软件安装，系统配置
 comments: true
 ---
 
 
-Linux(centos)无网络环境安装配置Opencv
+Centos无网络环境安装配置Opencv
 =====================================
 
 总得来讲，opencv在安装过程失败，往往是因为缺少相应库。我们这里详细讨论并介绍opencv
