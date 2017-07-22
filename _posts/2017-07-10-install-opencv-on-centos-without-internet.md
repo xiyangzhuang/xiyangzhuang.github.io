@@ -50,7 +50,7 @@ Opencv安装需要的库：
 -   \*[optional] libjpeg-dev, libpng-dev, libtiff-dev, libjasper-dev,
     libdc1394-22-dev
 
-### ffmpeg 安装（这里附件提供了依赖包下载的地址)
+### ffmpeg 安装（这里附件提供了依赖包下载的[地址,密码:uy8a](http://pan.baidu.com/s/1kVeIkjP)）
 
 >   ffmpeg （ffmpeg.x86_640:2.6.8-3.el7.nux）安装时需要的依赖库，总共需要18个依赖库：
 
