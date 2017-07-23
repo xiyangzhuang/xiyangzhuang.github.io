@@ -174,7 +174,7 @@ cannot open shared object file: No such file or directory
 
 输入命令：vi /home/username/.bashrc
 
-PKG_CONFIG_PATH=\$PKG_CONFIG_PATH:/where/you/install/opencv/lib/pkgconfig】
+PKG_CONFIG_PATH=\$PKG_CONFIG_PATH:/where/you/install/opencv/lib/pkgconfig
 
 Export PKG_CONFIG_PATH
 
@@ -199,7 +199,7 @@ pkg-config—libs opencv
 ​​生成动态链接库可输入:gcc demo.c \`pkg-config --cflags --libs opencv\` -fPIC
 -shared -o libdemo.so
 
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+```c
 #include "opencv/cv.h"  
 #include "opencv/highgui.h"  
 #include <iostream>
@@ -218,4 +218,4 @@ int main()
        }  
         return -1;  
 }  
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+```
