@@ -84,6 +84,8 @@ hdf5-devel gflags glog-devel lmdb-devel
   
 在上述库的安装过程中会相继要下载其它的依赖库
 
+    <!-- more -->
+
   OpenEXR-libs.x86_64 0:1.7.1-7.el7                                          
   atlas.x86_64 0:3.10.1-10.el7                                               
   boost.x86_64 0:1.53.0-26.el7                                               
