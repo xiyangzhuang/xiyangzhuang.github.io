@@ -1,8 +1,8 @@
 ### Site info:
-title: Stastical Inference Learning
-tagline: GIS Programmer, Data Analysist, A learning-programmer
+title: Stastical Inference And Reasearch In Tableau
+tagline: Image Processing, Data Analysist, A learning-programmer
 author: xiyangzhuang
-email: zhuangseyung@163.com
+email: 594299342@163.com;zhuangxiyang@outlook.com
 description: "This is a blog to record what i have learned." # You can edit this line in _config.yml. It will appear in your document head meta and in your feed.xml site description
 keywords: "xiyangzhuang, data, scientist, zhuangxiyang, python, statistic"
 baseurl: "/xiyangzhuang.github.io" # the subpath of your site, e.g. /blog/
@@ -11,6 +11,7 @@ locale: en_US
 
 ### Personal info and site tools info:
 twitter_username: zhuangxiyang
+linkedin_username: zhuangxiyang
 github_username:  xiyangzhuang
 disqus_shortname: xiyangzhuang-github-io
 favicon:     "/images/name.png"
@@ -57,6 +58,7 @@ locales:
       Taggedwith: "| 标签:"
       PostDate: "| 发表时间: "
       Google_search: "站内搜索"
+      Baidu_search: "站内搜索"
       Home: "首页"
       About: "关于"
       Guestbook: "留言"
