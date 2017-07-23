@@ -1,7 +1,8 @@
+---
 layout: post
-title: Centos7无网络环境安装配置Caffe
-modified: 2017-07-19
-categories: [articles, 环境配置, Caffe]
+title: Centos7无网络环境安装配置Opencv 
+modified: 2017-07-18
+categories: [articles, 环境配置, Opencv]
 tags: 
   - 环境配置
 comments: true
