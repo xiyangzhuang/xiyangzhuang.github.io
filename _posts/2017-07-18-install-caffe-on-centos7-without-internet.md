@@ -28,7 +28,7 @@ hdf5-devel gflags glog-devel lmdb-devel
 
 可以先使用联网的机器和没有访问限制的服务器下载相应依赖库，然后再进行安装。
 
-1.  glog
+1.glog
 
    wget <https://google-glog.googlecode.com/files/glog-0.3.3.tar.gz>   
    tar zxvf glog-0.3.3.tar.gz   
@@ -36,7 +36,7 @@ hdf5-devel gflags glog-devel lmdb-devel
    ./configure   
    make && make install
 
-2.  gflags
+2.gflags
 
    wget <https://github.com/schuhschuh/gflags/archive/master.zip>   
    unzip master.zip   
@@ -45,23 +45,22 @@ hdf5-devel gflags glog-devel lmdb-devel
    export CXXFLAGS=”-fPIC” && cmake .. && make VERBOSE=1   
    make && make install
 
-3.  lmdb
+3.lmdb
 
    [Git](http://lib.csdn.net/base/git) clone <https://github.com/LMDB/lmdb>   
    cd lmdb/libraries/liblmdb   
    make && make install
 
-4.  protobuf重要
+4.protobuf重要
 
    安装步骤请参考 <http://blog.csdn.net/tdmyl/article/details/31811317>
 
-5.  hdf5安装
+5.hdf5安装
 
    hdf5安装请查看官方文档   
    <http://www.hdfgroup.org/HDF5/release/obtainsrc.html#src>
 
-6.  leveldb安装 
-
+6.leveldb安装 
    leveldb下载请见<https://github.com/google/leveldb>   
    安装请见<http://blog.sina.com.cn/s/blog_560e310001015jfx.html>   
    缺失的步骤：   
@@ -69,7 +68,9 @@ hdf5-devel gflags glog-devel lmdb-devel
    make   
    cd out-shared   
    cp lib\* /usr/local/lib
+   
 然则，安装如下这些库往往需要大量的依赖库
+
   atlas-devel.x86_64 0:3.10.1-10.el7   boost-devel.x86_64 0:1.53.0-26.el7    
   gflags.x86_64 0:2.1.1-6.el7          gflags-devel.x86_64 0:2.1.1-6.el7     
   glog.x86_64 0:0.3.3-8.el7            glog-devel.x86_64 0:0.3.3-8.el7       
@@ -79,7 +80,9 @@ hdf5-devel gflags glog-devel lmdb-devel
   opencv.x86_64 0:2.4.5-3.el7          opencv-devel.x86_64 0:2.4.5-3.el7     
   protobuf.x86_64 0:2.5.0-8.el7        protobuf-devel.x86_64 0:2.5.0-8.el7   
   snappy-devel.x86_64 0:1.1.0-3.el7
+  
 在上述库的安装过程中会相继要下载其它的依赖库
+
   OpenEXR-libs.x86_64 0:1.7.1-7.el7                                          
   atlas.x86_64 0:3.10.1-10.el7                                               
   boost.x86_64 0:1.53.0-26.el7                                               
@@ -111,5 +114,4 @@ hdf5-devel gflags glog-devel lmdb-devel
 
 Caffe 安装配置
 ----------------
-
-Caffe 的安装配置，请参考官方文档。
+    Caffe 的安装配置，请参考官方文档。
