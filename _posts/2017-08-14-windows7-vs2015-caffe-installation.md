@@ -1,14 +1,12 @@
 ---
 layout: post
 title: Caffe VS2015 安装配置 
-modified: 2017-2-13
-categories: [articles, configuration]
+modified: 2017-07-12
+categories: [articles, 环境配置]
 tags: 
   - platform configuration
 comments: true
 ---
-Caffe VS2015安装配置
-====================
 
 ### 系统环境：
 
@@ -56,7 +54,7 @@ http://pan.baidu.com/s/1sl6XFRZ)，请点击直接下载。
 运行该脚本文件可以直接双击，这里采用start
 命令启动，出错时可以查看出错信息，方便核对。生成结果如下所示：
 
-![image](https://github.com/xiyangzhuang/xiyangzhuang.github.io/images/2017-08-14-windows7_vs2015_caffe_installation-1.png)
+![image](https://github.com/xiyangzhuang/xiyangzhuang.github.io/tree/master/images/2017-08-14-windows7_vs2015_caffe_installation-1.png)
 
 ### 编译测试
 
@@ -76,4 +74,4 @@ train--solver=D:\\Projects\\caffe\\examples\\mnist\\lenet_solver.prototxt
 
 ```python
 
-![image](https://github.com/xiyangzhuang/xiyangzhuang.github.io/images/2017-08-14-windows7_vs2015_caffe_installation-2.png)
+![image](https://github.com/xiyangzhuang/xiyangzhuang.github.io/tree/master/images/2017-08-14-windows7_vs2015_caffe_installation-2.png)
