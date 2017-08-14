@@ -70,6 +70,6 @@ http://pan.baidu.com/s/1sl6XFRZ)，请点击直接下载。
 ```python
 ..\\caffe\\scripts\\build\\tools\\Debug\\caffe-d.exe
 train--solver=D:\\Projects\\caffe\\examples\\mnist\\lenet_solver.prototxt
-```python
+```
 
 ![](https://github.com/xiyangzhuang/xiyangzhuang.github.io/blob/master/images/2017-02-14-windows7_vs2015_caffe_installation-1.png)
