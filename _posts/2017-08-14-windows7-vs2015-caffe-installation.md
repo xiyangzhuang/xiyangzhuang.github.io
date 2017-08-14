@@ -54,7 +54,7 @@ http://pan.baidu.com/s/1sl6XFRZ)，请点击直接下载。
 运行该脚本文件可以直接双击，这里采用start
 命令启动，出错时可以查看出错信息，方便核对。生成结果如下所示：
 
-![image](https://github.com/xiyangzhuang/xiyangzhuang.github.io/tree/master/images/2017-02-14-windows7_vs2015_caffe_installation-1.png)
+![](https://github.com/xiyangzhuang/xiyangzhuang.github.io/tree/master/images/2017-02-14-windows7_vs2015_caffe_installation-1.png)
 
 ### 编译测试
 
@@ -68,10 +68,8 @@ http://pan.baidu.com/s/1sl6XFRZ)，请点击直接下载。
 执行以下命令，如果不会出错，说明安装成功，这里再强调一下一定要修改路径为绝对路径或者将可执行文件添加到环境变量PATH。
 
 ```python
-
 ..\\caffe\\scripts\\build\\tools\\Debug\\caffe-d.exe
 train--solver=D:\\Projects\\caffe\\examples\\mnist\\lenet_solver.prototxt
-
 ```python
 
-![image](https://github.com/xiyangzhuang/xiyangzhuang.github.io/images/2017-02-14-windows7_vs2015_caffe_installation-2.png)
+![](https://github.com/xiyangzhuang/xiyangzhuang.github.io/blob/master/images/2017-02-14-windows7_vs2015_caffe_installation-1.png)
