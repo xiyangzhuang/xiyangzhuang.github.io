@@ -52,9 +52,9 @@ http://pan.baidu.com/s/1sl6XFRZ)，请点击直接下载。
 这里由于电脑没有配置GPU因此修改build_win.cmd里面的CPU_ONLY值为1。
 
 运行该脚本文件可以直接双击，这里采用start
-命令启动，出错时可以查看出错信息，方便核对。生成结果如下所示：
+命令启动，出错时可以查看出错信息，方便核对。
 
-![](../images/2017-02-14-windows7_vs2015_caffe_installation-1.png)
+![生成结果](../images/2017-02-14-windows7_vs2015_caffe_installation-1.png)
 
 ### 编译测试
 
@@ -71,4 +71,4 @@ http://pan.baidu.com/s/1sl6XFRZ)，请点击直接下载。
 > train--solver=D:\\Projects\\caffe\\examples\\mnist\\lenet_solver.prototxt
 
 
-![](../images/2017-02-14-windows7_vs2015_caffe_installation-1.png)
+![运行成功](../images/2017-02-14-windows7_vs2015_caffe_installation-2.png)
