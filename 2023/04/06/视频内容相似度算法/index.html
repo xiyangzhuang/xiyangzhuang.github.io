@@ -1,0 +1,769 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"tableau-zxy.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="随着视频内容越来越多，通过深度模型理解视频，提取视频内容特征，建立视频搜索引擎，已经成为主流。视频内容相似度检索以及视频内容理解能力越发重要。再业务推进过程以及技术积累过程中，对调研尝试过的数据和方法，做简要的整理和剖析。北大满哥视频侵权，说明平台在视频内容审核这一块，严格意义上讲，就平台再视频版权这一块，或多或少的都需要人工运维去做支撑（依据没有运用OCR以及语义等初级的文案审核能力对头部流量视">
+<meta property="og:type" content="article">
+<meta property="og:title" content="视频内容相似度算法">
+<meta property="og:url" content="http://tableau-zxy.github.io/2023/04/06/%E8%A7%86%E9%A2%91%E5%86%85%E5%AE%B9%E7%9B%B8%E4%BC%BC%E5%BA%A6%E7%AE%97%E6%B3%95/index.html">
+<meta property="og:site_name" content="zhuangxy&#39;blog">
+<meta property="og:description" content="随着视频内容越来越多，通过深度模型理解视频，提取视频内容特征，建立视频搜索引擎，已经成为主流。视频内容相似度检索以及视频内容理解能力越发重要。再业务推进过程以及技术积累过程中，对调研尝试过的数据和方法，做简要的整理和剖析。北大满哥视频侵权，说明平台在视频内容审核这一块，严格意义上讲，就平台再视频版权这一块，或多或少的都需要人工运维去做支撑（依据没有运用OCR以及语义等初级的文案审核能力对头部流量视">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2023-04-06T12:41:53.911Z">
+<meta property="article:modified_time" content="2023-04-06T14:30:27.441Z">
+<meta property="article:author" content="Zhuang xiyang">
+<meta property="article:tag" content="statistic">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://tableau-zxy.github.io/2023/04/06/%E8%A7%86%E9%A2%91%E5%86%85%E5%AE%B9%E7%9B%B8%E4%BC%BC%E5%BA%A6%E7%AE%97%E6%B3%95/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>视频内容相似度算法 | zhuangxy'blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">zhuangxy'blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">personal blog</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://tableau-zxy.github.io/2023/04/06/%E8%A7%86%E9%A2%91%E5%86%85%E5%AE%B9%E7%9B%B8%E4%BC%BC%E5%BA%A6%E7%AE%97%E6%B3%95/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.png">
+      <meta itemprop="name" content="Zhuang xiyang">
+      <meta itemprop="description" content="think and do it">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="zhuangxy'blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          视频内容相似度算法
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2023-04-06 20:41:53 / 修改时间：22:30:27" itemprop="dateCreated datePublished" datetime="2023-04-06T20:41:53+08:00">2023-04-06</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E8%A7%86%E9%A2%91%E5%A4%84%E7%90%86/" itemprop="url" rel="index"><span itemprop="name">视频处理</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E8%A7%86%E9%A2%91%E5%A4%84%E7%90%86/%E6%95%B0%E5%AD%97%E6%8C%87%E7%BA%B9/" itemprop="url" rel="index"><span itemprop="name">数字指纹</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E8%A7%86%E9%A2%91%E5%A4%84%E7%90%86/%E6%95%B0%E5%AD%97%E6%8C%87%E7%BA%B9/%E8%A7%86%E9%A2%91%E7%9B%B8%E4%BC%BC%E5%BA%A6/" itemprop="url" rel="index"><span itemprop="name">视频相似度</span></a>
+                </span>
+            </span>
+
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/2023/04/06/%E8%A7%86%E9%A2%91%E5%86%85%E5%AE%B9%E7%9B%B8%E4%BC%BC%E5%BA%A6%E7%AE%97%E6%B3%95/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2023/04/06/%E8%A7%86%E9%A2%91%E5%86%85%E5%AE%B9%E7%9B%B8%E4%BC%BC%E5%BA%A6%E7%AE%97%E6%B3%95/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>随着视频内容越来越多，通过深度模型理解视频，提取视频内容特征，建立视频搜索引擎，已经成为主流。视频内容相似度检索以及视频内容理解能力越发重要。再业务推进过程以及技术积累过程中，对调研尝试过的数据和方法，做简要的整理和剖析。北大满哥视频侵权，说明平台在视频内容审核这一块，严格意义上讲，就平台再视频版权这一块，或多或少的都需要人工运维去做支撑（依据没有运用OCR以及语义等初级的文案审核能力对头部流量视频做内容风控）。显然目前互联网企业的初衷，还在我们的"菜篮子"里，未将精力投入的科技的星辰大海，个人观点。
+<span id="more"></span> ## 视频相似问题</p>
+<h2 id="处理问题规模">处理问题规模</h2>
+<p>常见的算法都需要的对每帧图片内容做编码，单帧（或者视频段）处理速度，对最终的推理耗时影响很大；比如，单帧耗时指视频流拉取至内存以及单帧图片特征提取耗时（视频读取平均一帧，20ms）；
+<strong>(视频)20000 * 帧数（2*60*25）* 单帧耗时50ms/1000/60/60 ~=
+833小时；</strong></p>
+<h2 id="常见的视频相似度问题">常见的视频相似度问题</h2>
+<p><strong>码率变化，格式变化，添加透明水印（少量），分辨率变化，添加文本，裁剪，明显水印，边界扩充；视频内容存在交集，裁剪，边界扩充问题示例。</strong></p>
+<p>这里容易出现起义的问题就是，视频段存在交集（episode
+内容copy）；视频内容存在交集(episode
+内容趋同，同样的交互内容）；比如最近北大满哥视频抄袭事件，是需要更复杂的语义理解能力，比如语音识别能力，对抄袭文案进行，识别。然当前所有平台再视频版权这一块，或多或少的都需要人工运维去做支撑。如前面所说，目前的互联网企业，还是觊觎我们的"菜篮子"，未将精力投入的科技的星辰大海。</p>
+<h2 id="数据集">数据集</h2>
+<h2 id="开源数据集">开源数据集</h2>
+<p>视频+文本</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://paperswithcode.com/dataset/msvd">Microsoft Research
+Video Description Corpus</a> <a
+target="_blank" rel="noopener" href="https://paperswithcode.com/dataset/msvd">(MSVD)</a>：也称为YouTube2Text
+dataset，该数据集同样由Microsoft Research提供，地址为 Microsoft Research
+Video Description Corpus
+。该数据集包含1970段YouTube视频片段（时长在10-25s之间），每段视频被标注了大概40条英文句子。</li>
+<li><a target="_blank" rel="noopener" href="https://paperswithcode.com/dataset/msr-vtt">MSR-VTT
+(Microsoft Research Video to</a> <a
+target="_blank" rel="noopener" href="https://paperswithcode.com/dataset/msr-vtt">Text)</a>：该数据集为ACM
+Multimedia 2016 的 Microsoft Research - Video to Text (MSR-VTT)
+Challenge。地址为 Microsoft Multimedia Challenge
+。该数据集包含10000个视频片段（video
+clip），被分为训练，验证和测试集三部分。每个视频片段都被标注了大概20条英文句子。此外，MSR-VTT还提供了每个视频的类别信息（共计20类），这个类别信息算是先验的，在测试集中也是已知的。同时，视频都是包含音频信息的。该数据库共计使用了四种机器翻译的评价指标，分别为：METEOR,
+BLEU@1-4,ROUGE-L,CIDEr。</li>
+<li><a target="_blank" rel="noopener" href="https://paperswithcode.com/dataset/lsmdc">LSMDC (Large
+Scale Movie Description</a> <a
+target="_blank" rel="noopener" href="https://paperswithcode.com/dataset/lsmdc">Challenge)</a>: This
+dataset contains 118,081 short video clips extracted from 202 movies.
+Each video has a caption, either extracted from the movie script or from
+transcribed DVS (descriptive video services) for the visually impaired.
+The validation set contains 7408 clips and evaluation is performed on a
+test set of 1000 videos from movies disjoint from the training and val
+sets.</li>
+</ul>
+<p>视频</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="http://vireo.cs.cityu.edu.hk/webvideo/">CC_WEB_VIDEO</a> -
+Near-Duplicate Video Retrieval</li>
+<li><a target="_blank" rel="noopener" href="http://ndd.iti.gr/fivr/">FIVR-5K, FIVR-200K</a> -
+Fine-grained Incident Video Retrieval</li>
+<li><a target="_blank" rel="noopener" href="http://pascal.inrialpes.fr/data/evve/">EVVE</a> -
+Event-based Video Retrieval</li>
+<li><a target="_blank" rel="noopener" href="http://activity-net.org/">ActivityNet</a> - Action Video
+Retrieval</li>
+</ul>
+<p>竞赛视频数据</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://algo.browser.qq.com/">QQ Browser 2021 Ai Algorithm
+Competition</a></li>
+<li>也可以在这里下载：https://share.weiyun.com/S7YSt5sp
+密码：78u5bw</li>
+</ul>
+<p>开放生产数据</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://github.com/alipay/VCSL">VCSL
+数据集和评测以及算法代码</a></li>
+<li>https://github.com/alipay/VCSL</li>
+</ul>
+<h2 id="业界方案">业界方案</h2>
+<h2 id="抖音视频检索能力">抖音视频检索能力</h2>
+<ul>
+<li>https://www.volcengine.com/product/videohighlights
+<strong>开放能力</strong>：通过多模态AI算法提取精彩片段并剪除重复内容，将其浓缩为精华摘要短视频，应用于广告投放、游戏投放、教育等场景。
+<strong>分析</strong>：多模态算法只用于视频片段内去重，不支持大量视频的检索；</li>
+</ul>
+<figure>
+<img
+src="https://pic1.zhimg.com/80/v2-6def731ea4d2e38bbe1e7d3ae02236d8_720w.png?source=d16d100b"
+alt="img" />
+<figcaption aria-hidden="true">img</figcaption>
+</figure>
+<p>编辑</p>
+<p>Image</p>
+<h2 id="百度视频检索能力">百度视频检索能力</h2>
+<ul>
+<li>https://cloud.baidu.com/doc/MMS/s/Gkbhphdtw</li>
+</ul>
+<figure>
+<img
+src="https://picx.zhimg.com/80/v2-fdfa6caf8dec6de79a662d30440f4f6d_720w.png?source=d16d100b"
+alt="img" />
+<figcaption aria-hidden="true">img</figcaption>
+</figure>
+<p>编辑</p>
+<p>Image</p>
+<h2 id="阿里云开放视频检索能力">阿里云开放视频检索能力</h2>
+<ul>
+<li>https://retina.aliyun.com/?spm=5176.11914242.J_5253785160.4.57354b57sY8Oed#/DNA/sport</li>
+</ul>
+<figure>
+<img
+src="https://picx.zhimg.com/80/v2-fafa6a85209948f79e287081c973cfdb_720w.png?source=d16d100b"
+alt="img" />
+<figcaption aria-hidden="true">img</figcaption>
+</figure>
+<p>编辑</p>
+<p>Image</p>
+<h2 id="算法方案">算法方案</h2>
+<h3 id="基于视频编码的">基于视频编码的</h3>
+<ul>
+<li>https://github.com/MKLab-ITI/visil</li>
+<li>Video Similarity and Alignment Learning on Partial Video Copy
+Detection</li>
+<li>https://arxiv.org/pdf/2108.01817v1.pdf</li>
+<li>https://pvcd-vsal.github.io/vsal//results/</li>
+</ul>
+<h3 id="基于视频画面-文本联合编码">基于视频画面-文本联合编码</h3>
+<ul>
+<li>https://github.com/willard-yuan/video-text-retrieval-papers</li>
+</ul>
+<h3 id="基于视频画面-语音联合编码">基于视频画面-语音联合编码</h3>
+<ul>
+<li>待补充完善</li>
+</ul>
+<h3 id="开源方案">开源方案</h3>
+<p>https://milvus.io/cn/docs/v2.0.0/video_similarity_search.md</p>
+<h2 id="常用算法">常用算法</h2>
+<p>一般提取视频特征分成两步：</p>
+<ul>
+<li>帧级特征提取，视频画面，或者音频片段特征提取；</li>
+<li>再获取帧级特征表示后，需要一个时间对齐模，揭示潜在复制视频对之间一个或多个复制片段的相似性和时间范围；</li>
+</ul>
+<h3 id="帧级特征获取">帧级特征获取</h3>
+<p>从第一步来看，视频检索本质上是对重复画面或者语音片段等的检索识别，从对底层的特征编码能力角度，常见视频相似度查找算法如下；</p>
+<table>
+<colgroup>
+<col style="width: 26%" />
+<col style="width: 26%" />
+<col style="width: 47%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>视频相似度度量方案</th>
+<th>方法分类</th>
+<th>特点</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>MD5,SHA-256</td>
+<td>哈希算法</td>
+<td>只能分析完全相同内容</td>
+</tr>
+<tr class="even">
+<td>dHash/aHash/pHash, PDQ</td>
+<td>传统图像感知方案</td>
+<td>对裁剪、翻转等具有一定的鲁棒性</td>
+</tr>
+<tr class="odd">
+<td>深度hash 方案</td>
+<td>深度hash感知</td>
+<td>对裁剪、翻转，灰度化等都具有较强的鲁棒性</td>
+</tr>
+<tr class="even">
+<td>RMAC,DINO</td>
+<td>基于深度的图像特征编码</td>
+<td>对于图像篡改具有较强的鲁棒性</td>
+</tr>
+<tr class="odd">
+<td>图文预训练模型</td>
+<td>深度多模态</td>
+<td>指标依赖于数据量</td>
+</tr>
+<tr class="even">
+<td>图音预训练模型</td>
+<td>深度多模态</td>
+<td>待补充</td>
+</tr>
+</tbody>
+</table>
+<p>从第二步来看，将上述视频内容进行帧级特征表示，需要分析视频对之间一个或多个复制片段的相似性，并确定时间范围</p>
+<h3 id="经典时空建模方法如下">经典时空建模方法如下</h3>
+<ul>
+<li>Temporal Hough Voting</li>
+<li>graph-based Temporal Network</li>
+<li><a
+target="_blank" rel="noopener" href="https://iris.unimore.it/bitstream/11380/1155754/2/1517.pdf">temporal
+matching kernel</a></li>
+<li><a
+target="_blank" rel="noopener" href="https://iris.unimore.it/bitstream/11380/1155754/2/1517.pdf">LAMV</a></li>
+</ul>
+<h2 id="reference">Reference</h2>
+<ul>
+<li>https://richzhang.github.io/PerceptualSimilarity/index_files/poster_cvpr.pdf</li>
+<li>Poullot S , Tsukatani S , Nguyen A P , et al. Temporal Matching
+Kernel with Explicit Feature Maps[C]// Acm International Conference on
+Multimedia. ACM, 2015.</li>
+<li>L. Baraldi, M. Douze, R. Cucchiara, and H. Jegou. Lamv :Learning to
+align and match videos with kernelized temporal layers. In 2018 IEEE/CVF
+Conference on Computer Vision and Pattern Recognition, pages 7804–7813,
+2018. 1, 2, 3**</li>
+<li>M. Douze, H. Jegou, and C. Schmid. An image-based approach to video
+copy detection with spatio-temporal postfiltering. IEEE Transactions on
+Multimedia, 12(4):257–266,2010. 3, 7</li>
+<li>Hung-Khoon Tan, Chong-Wah Ngo, Richard Hong, and TatSeng Chua.
+Scalable detection of partial near-duplicate videos by visual-temporal
+consistency. MM ’09, page 145–154, New York, NY, USA, 2009. Association
+for Computing Machinery. 3, 7</li>
+</ul>
+<blockquote>
+<p>本文使用 <a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/106057556">Zhihu On
+VSCode</a> 创作并发布</p>
+</blockquote>
+
+    </div>
+
+    
+    
+    
+        <div class="reward-container">
+  <div></div>
+  <button onclick="var qr = document.getElementById('qr'); qr.style.display = (qr.style.display === 'none') ? 'block' : 'none';">
+    打赏
+  </button>
+  <div id="qr" style="display: none;">
+      
+      <div style="display: inline-block;">
+        <img src="/images/wechatpay.png" alt="Zhuang xiyang 微信支付">
+        <p>微信支付</p>
+      </div>
+      
+      <div style="display: inline-block;">
+        <img src="/images/alipay.png" alt="Zhuang xiyang 支付宝">
+        <p>支付宝</p>
+      </div>
+
+  </div>
+</div>
+
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>Zhuang xiyang
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="http://tableau-zxy.github.io/2023/04/06/%E8%A7%86%E9%A2%91%E5%86%85%E5%AE%B9%E7%9B%B8%E4%BC%BC%E5%BA%A6%E7%AE%97%E6%B3%95/" title="视频内容相似度算法">http://tableau-zxy.github.io/2023/04/06/视频内容相似度算法/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+   <li class="post-copyright-license">
+   并保留本声明。感谢您的阅读和支持！
+  </li>
+
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/statistic/" rel="tag"> <i class="fa fa-tag"></i> statistic</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2023/04/06/statistic-function/" rel="prev" title="常见统计函数">
+      <i class="fa fa-chevron-left"></i> 常见统计函数
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%A4%84%E7%90%86%E9%97%AE%E9%A2%98%E8%A7%84%E6%A8%A1"><span class="nav-number">1.</span> <span class="nav-text">处理问题规模</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B8%B8%E8%A7%81%E7%9A%84%E8%A7%86%E9%A2%91%E7%9B%B8%E4%BC%BC%E5%BA%A6%E9%97%AE%E9%A2%98"><span class="nav-number">2.</span> <span class="nav-text">常见的视频相似度问题</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E9%9B%86"><span class="nav-number">3.</span> <span class="nav-text">数据集</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BC%80%E6%BA%90%E6%95%B0%E6%8D%AE%E9%9B%86"><span class="nav-number">4.</span> <span class="nav-text">开源数据集</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%9A%E7%95%8C%E6%96%B9%E6%A1%88"><span class="nav-number">5.</span> <span class="nav-text">业界方案</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%8A%96%E9%9F%B3%E8%A7%86%E9%A2%91%E6%A3%80%E7%B4%A2%E8%83%BD%E5%8A%9B"><span class="nav-number">6.</span> <span class="nav-text">抖音视频检索能力</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%99%BE%E5%BA%A6%E8%A7%86%E9%A2%91%E6%A3%80%E7%B4%A2%E8%83%BD%E5%8A%9B"><span class="nav-number">7.</span> <span class="nav-text">百度视频检索能力</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%98%BF%E9%87%8C%E4%BA%91%E5%BC%80%E6%94%BE%E8%A7%86%E9%A2%91%E6%A3%80%E7%B4%A2%E8%83%BD%E5%8A%9B"><span class="nav-number">8.</span> <span class="nav-text">阿里云开放视频检索能力</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%AE%97%E6%B3%95%E6%96%B9%E6%A1%88"><span class="nav-number">9.</span> <span class="nav-text">算法方案</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9F%BA%E4%BA%8E%E8%A7%86%E9%A2%91%E7%BC%96%E7%A0%81%E7%9A%84"><span class="nav-number">9.1.</span> <span class="nav-text">基于视频编码的</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9F%BA%E4%BA%8E%E8%A7%86%E9%A2%91%E7%94%BB%E9%9D%A2-%E6%96%87%E6%9C%AC%E8%81%94%E5%90%88%E7%BC%96%E7%A0%81"><span class="nav-number">9.2.</span> <span class="nav-text">基于视频画面-文本联合编码</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9F%BA%E4%BA%8E%E8%A7%86%E9%A2%91%E7%94%BB%E9%9D%A2-%E8%AF%AD%E9%9F%B3%E8%81%94%E5%90%88%E7%BC%96%E7%A0%81"><span class="nav-number">9.3.</span> <span class="nav-text">基于视频画面-语音联合编码</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BC%80%E6%BA%90%E6%96%B9%E6%A1%88"><span class="nav-number">9.4.</span> <span class="nav-text">开源方案</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B8%B8%E7%94%A8%E7%AE%97%E6%B3%95"><span class="nav-number">10.</span> <span class="nav-text">常用算法</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B8%A7%E7%BA%A7%E7%89%B9%E5%BE%81%E8%8E%B7%E5%8F%96"><span class="nav-number">10.1.</span> <span class="nav-text">帧级特征获取</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BB%8F%E5%85%B8%E6%97%B6%E7%A9%BA%E5%BB%BA%E6%A8%A1%E6%96%B9%E6%B3%95%E5%A6%82%E4%B8%8B"><span class="nav-number">10.2.</span> <span class="nav-text">经典时空建模方法如下</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#reference"><span class="nav-number">11.</span> <span class="nav-text">Reference</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Zhuang xiyang"
+      src="/images/avatar.png">
+  <p class="site-author-name" itemprop="name">Zhuang xiyang</p>
+  <div class="site-description" itemprop="description">think and do it</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">4</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">3</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="/images/wechat_communication.png" title="WeChat → &#x2F;images&#x2F;wechat_communication.png"><i class="fab fa-weixin fa-fw"></i>WeChat</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="/images/qq_communication.png" title="QQ → &#x2F;images&#x2F;qq_communication.png"><i class="fab fa-qq fa-fw"></i>QQ</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:zhuangxiyang@outlook.com" title="E-Mail → mailto:zhuangxiyang@outlook.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://github.com/tableau-zxy" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;tableau-zxy" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Zhuang xiyang</span>
+</div>
+
+<!--
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>-->
+<div class="theme-info">
+  <div class="powered-by"></div>
+  <span class="post-count">博客全站共8k字</span>
+</div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : 'PSi7FY8PEMCGBOrsGIimN9Nd-gzGzoHsz',
+      appKey     : 'I3MwowbOOP6US7iQbyl2nyio',
+      placeholder: "Just go go",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : false,
+      lang       : '' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+</body>
+</html>
