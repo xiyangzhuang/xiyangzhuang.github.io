@@ -1,33 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
-    <title>How to build gui with python</title>
-    <url>/2023/04/06/how-to-build-gui-with-python/</url>
-    <content><![CDATA[<p>为了方便测试我们搭建的界面和构建一下小应用，该应用获取服务器字符串，端口号，文件名（路径），并将它保存在get_filepath_from_server.py,由于本应用仅供测试使用，其代码简单如下所示：</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">helptxt = <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">get_filepath_from_server.py -file fffffff [-port number] [-server server|localhost]</span></span><br><span class="line"><span class="string">&quot;&quot;&quot;</span></span><br><span class="line">defaultServer = <span class="string">&#x27;localhost&#x27;</span></span><br><span class="line">defaultPort = <span class="string">&#x27;80&#x27;</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">parse_command_line</span>():</span><br><span class="line">    <span class="built_in">dict</span> = &#123;&#125;                          <span class="comment">#put in dict for easy finding</span></span><br><span class="line">    args = sys.argv[<span class="number">1</span>:]                <span class="comment">#skip program name at front of the args</span></span><br><span class="line">    <span class="keyword">while</span> <span class="built_in">len</span>(args) &gt;= <span class="number">2</span>:</span><br><span class="line">        <span class="built_in">dict</span>[args[<span class="number">0</span>]] = args[<span class="number">1</span>]         <span class="comment">#examle dict[&#x27;-server&#x27;]=&#x27;localhost&#x27;</span></span><br><span class="line">        args = args[<span class="number">2</span>:]</span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">dict</span></span><br><span class="line">  </span><br><span class="line"><span class="keyword">def</span> <span class="title function_">get_filepath_from_server</span>(<span class="params">server, port, file</span>):</span><br><span class="line">   <span class="keyword">return</span> server + <span class="string">&quot;:&quot;</span> + port + <span class="string">&quot;:&quot;</span> + file</span><br><span class="line">     </span><br><span class="line"><span class="keyword">def</span> <span class="title function_">main</span>(<span class="params">args</span>):</span><br><span class="line">      </span><br><span class="line">    server = args.get(<span class="string">&#x27;-server&#x27;</span>, defaultServer)</span><br><span class="line">    port = args.get(<span class="string">&#x27;-port&#x27;</span>, defaultPort)</span><br><span class="line">    filepath = args.get(<span class="string">&#x27;-file&#x27;</span>, <span class="literal">None</span>)</span><br><span class="line">    <span class="keyword">if</span> filepath == <span class="literal">None</span>:</span><br><span class="line">        <span class="built_in">print</span>(helptext)</span><br><span class="line">      </span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:</span><br><span class="line">    args = parse_command_line()</span><br><span class="line">    main(args)</span><br></pre></td></tr></table></figure>
-<span id="more"></span>
-<p>假设大家对Python3界面搭建有一个基本的了解，下面分别介绍使用行框架和命令行，网格，复用表单三种搭建界面的方法。对于追求代码通用性的应该果断舍弃前两种方案。</p>
-<p>1）使用行框架和命令行：</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">helptxt = <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">get_filepath_from_server.py -file fffffff [-port number] [-server server|localhost]</span></span><br><span class="line"><span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="keyword">import</span> sys, os</span><br><span class="line"><span class="keyword">from</span> tkinter <span class="keyword">import</span> *</span><br><span class="line"><span class="keyword">from</span> tkinter.messagebox <span class="keyword">import</span> showinfo</span><br><span class="line"> </span><br><span class="line"><span class="keyword">def</span> <span class="title function_">onReturnKey</span>():</span><br><span class="line">    cmdline = (<span class="string">&#x27;python get_filepath_from_server.py -server %s -port -%s -host %s&#x27;</span>%</span><br><span class="line">                (content[<span class="string">&#x27;File&#x27;</span>].get(),</span><br><span class="line">                content[<span class="string">&#x27;Port&#x27;</span>].get(),</span><br><span class="line">                content[<span class="string">&#x27;Server&#x27;</span>].get()))</span><br><span class="line">    os.system(cmdline)</span><br><span class="line">    showinfo(<span class="string">&#x27;getfilegui-1&#x27;</span>, <span class="string">&#x27;Process complete&#x27;</span>)</span><br><span class="line"> </span><br><span class="line">box = Tk()</span><br><span class="line">labels = [<span class="string">&#x27;Server&#x27;</span>, <span class="string">&#x27;Port&#x27;</span>, <span class="string">&#x27;File&#x27;</span>]</span><br><span class="line">content = &#123;&#125;</span><br><span class="line"><span class="keyword">for</span> label <span class="keyword">in</span> labels:</span><br><span class="line">    row = Frame(box)</span><br><span class="line">    row.pack(fill=X)</span><br><span class="line">    Label(row, text=label, width=<span class="number">6</span>).pack(side=LEFT)</span><br><span class="line">    entry = Entry(row)</span><br><span class="line">    entry.pack(side=RIGHT, expand=YES, fill=X)</span><br><span class="line">    content[label] = entry</span><br><span class="line"> </span><br><span class="line">box.title(<span class="string">&#x27;getfilegui-1&#x27;</span>)</span><br><span class="line">box.bind(<span class="string">&#x27;&lt;Return&gt;&#x27;</span>, (<span class="keyword">lambda</span> event: onReturnKey()))</span><br><span class="line">mainloop()</span><br></pre></td></tr></table></figure>
-<p>2）使用网格和函数调用：</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">helptxt = <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">get_filepath_from_server.py -file fffffff [-port number] [-server server|localhost]</span></span><br><span class="line"><span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="keyword">import</span> get_filepath_from_server</span><br><span class="line"><span class="keyword">from</span> tkinter <span class="keyword">import</span> *</span><br><span class="line"><span class="keyword">from</span> tkinter.messagebox <span class="keyword">import</span> showinfo</span><br><span class="line"> </span><br><span class="line"><span class="keyword">def</span> <span class="title function_">onSubmit</span>():</span><br><span class="line">    get_filepath_from_server.get_filepath_from_server(content[<span class="string">&#x27;Server&#x27;</span>].get(),</span><br><span class="line">                                    content[<span class="string">&#x27;Port&#x27;</span>].get(),</span><br><span class="line">                                    content[<span class="string">&#x27;File&#x27;</span>].get())</span><br><span class="line">    showinfo(<span class="string">&#x27;getfilegui-2&#x27;</span>, <span class="string">&quot;process complete&quot;</span>)</span><br><span class="line"> </span><br><span class="line">     </span><br><span class="line">box= Tk()</span><br><span class="line">labels = [<span class="string">&#x27;Server&#x27;</span>, <span class="string">&#x27;Port&#x27;</span>, <span class="string">&#x27;File&#x27;</span>]</span><br><span class="line">rownum =<span class="number">0</span></span><br><span class="line">content = &#123;&#125;</span><br><span class="line"><span class="keyword">for</span> label <span class="keyword">in</span> labels:</span><br><span class="line">    Label(box, text=label).grid(column=<span class="number">0</span>, row=rownum)</span><br><span class="line">    entry = Entry(box)</span><br><span class="line">    entry.grid(column=<span class="number">1</span>, row=rownum, sticky=E+W)</span><br><span class="line">    content[label] = entry</span><br><span class="line">    rownum += <span class="number">1</span></span><br><span class="line">     </span><br><span class="line">box.columnconfigure(<span class="number">0</span>, weight=<span class="number">0</span>)</span><br><span class="line">box.columnconfigure(<span class="number">1</span>, weight=<span class="number">1</span>)</span><br><span class="line">Button(text=<span class="string">&#x27;Submit&#x27;</span>, command=onSubmit).grid(row=rownum, column=<span class="number">0</span>, columnspan=<span class="number">2</span>)</span><br><span class="line"> </span><br><span class="line">box.title(<span class="string">&#x27;getfilegui-2&#x27;</span>)</span><br><span class="line">box.bind(<span class="string">&#x27;&lt;Return&gt;&#x27;</span>, (<span class="keyword">lambda</span> event: onSubmit()))</span><br><span class="line">mainloop()</span><br></pre></td></tr></table></figure>
-<p>3）使用可利用的表单布局类：</p>
-<p>示例代码1：</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="keyword">from</span> tkinter <span class="keyword">import</span> *</span><br><span class="line">entrysize = <span class="number">40</span></span><br><span class="line"> </span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Form</span>:</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params">self, labels, parent=<span class="literal">None</span></span>):</span><br><span class="line">        labelsize = <span class="built_in">max</span>(<span class="built_in">len</span>(x) <span class="keyword">for</span> x <span class="keyword">in</span> labels) + <span class="number">2</span></span><br><span class="line">        box = Frame(parent)</span><br><span class="line">        box.pack(expand=YES, fill=X)</span><br><span class="line">        rows = Frame(box, bd =<span class="number">2</span>, relief=GROOVE)</span><br><span class="line">        rows.pack(side=TOP, expand=YES, fill=X)</span><br><span class="line">        self.content = &#123;&#125;</span><br><span class="line">        <span class="keyword">for</span> label <span class="keyword">in</span> labels:</span><br><span class="line">            row = Frame(rows)</span><br><span class="line">            row.pack(fill=X)</span><br><span class="line">            Label(row, text=label, width=labelsize).pack(side=LEFT)</span><br><span class="line">            entry = Entry(row, width=entrysize)</span><br><span class="line">            entry.pack(side=RIGHT, expand=YES, fill=X)</span><br><span class="line">            self.content[label] = entry</span><br><span class="line">        Button(box, text=<span class="string">&#x27;Cancel&#x27;</span>, command=self.onCancel).pack(side=RIGHT)</span><br><span class="line">        Button(box, text=<span class="string">&#x27;Submit&#x27;</span>, command=self.onSubmit).pack(side=RIGHT)</span><br><span class="line">        box.master.bind(<span class="string">&#x27;&lt;Return&gt;&#x27;</span>, (<span class="keyword">lambda</span> event: self. onSubmit()))</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">onSubmit</span>(<span class="params">self</span>):</span><br><span class="line">        <span class="keyword">for</span> key <span class="keyword">in</span> self.content:</span><br><span class="line">            <span class="built_in">print</span>(key, <span class="string">&#x27;\t=&gt;\t&#x27;</span>, self.content[key].get())</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">onCancel</span>(<span class="params">self</span>):</span><br><span class="line">        Tk.quit()</span><br><span class="line"> </span><br><span class="line">         </span><br><span class="line"><span class="keyword">class</span> <span class="title class_">DynamicForm</span>(<span class="title class_ inherited__">Form</span>):    </span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params">self, labels=<span class="literal">None</span></span>):</span><br><span class="line">        labels = <span class="built_in">input</span>(<span class="string">&#x27;Enter field names:&#x27;</span>).split()</span><br><span class="line">        Form.__init__(self, labels)</span><br><span class="line">         </span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">onSubmit</span>(<span class="params">self</span>):</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&#x27;Field Values...&#x27;</span>)</span><br><span class="line">        Form.onSubmit(self)</span><br><span class="line">        self.onCancel()</span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&quot;__main__&quot;</span>:</span><br><span class="line">    <span class="keyword">import</span> sys</span><br><span class="line">    <span class="keyword">if</span> <span class="built_in">len</span>(sys.argv) == <span class="number">1</span>:</span><br><span class="line">        Form([<span class="string">&#x27;Name&#x27;</span>, <span class="string">&#x27;Age&#x27;</span>, <span class="string">&#x27;Job&#x27;</span>])</span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        DynamicForm()</span><br><span class="line">    mainloop()</span><br></pre></td></tr></table></figure>
-<p>示例代码2：</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">getfilegui.py</span></span><br><span class="line"><span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="keyword">from</span> form <span class="keyword">import</span> Form</span><br><span class="line"><span class="keyword">from</span> tkinter <span class="keyword">import</span> Tk, mainloop</span><br><span class="line"><span class="keyword">from</span> tkinter.messagebox <span class="keyword">import</span> showinfo</span><br><span class="line"><span class="keyword">import</span> get_filepath_from_server, os</span><br><span class="line"> </span><br><span class="line"><span class="keyword">class</span> <span class="title class_">GetFilePathForm</span>(<span class="title class_ inherited__">Form</span>):</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params">self, oneshot=<span class="literal">False</span></span>):</span><br><span class="line">        root = Tk()</span><br><span class="line">        root.title(<span class="string">&#x27;getfilegui&#x27;</span>)</span><br><span class="line">        labels = [<span class="string">&#x27;Server Name&#x27;</span>, <span class="string">&#x27;Port Number&#x27;</span>, <span class="string">&#x27;File&#x27;</span>]</span><br><span class="line">        Form.__init__(self, labels, root)</span><br><span class="line">        self.oneshot = oneshot</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">onSubmit</span>(<span class="params">self</span>):</span><br><span class="line">        Form.onSubmit(self)</span><br><span class="line">        portnumber = self.content[<span class="string">&#x27;Port Number&#x27;</span>].get()</span><br><span class="line">        servername = self.content[<span class="string">&#x27;Server Name&#x27;</span>].get()</span><br><span class="line">        filename = self.content[<span class="string">&#x27;File&#x27;</span>].get()</span><br><span class="line">        get_filepath_from_server.get_filepath_from_server(servername, portnumber, filename)</span><br><span class="line">        showinfo(<span class="string">&#x27;getfilegui&#x27;</span>, <span class="string">&#x27;Process Complete&#x27;</span>)</span><br><span class="line">        <span class="keyword">if</span> self.oneshot: Tk().quit()</span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:</span><br><span class="line">    GetFilePathForm()</span><br><span class="line">    mainloop()</span><br></pre></td></tr></table></figure>
-]]></content>
-      <categories>
-        <category>articles</category>
-        <category>python</category>
-      </categories>
-      <tags>
-        <tag>python</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>行人重识别文献研究</title>
-    <url>/2023/04/06/person-reidentification/</url>
+    <url>/2023/04/07/person-reidentification/</url>
     <content><![CDATA[<p>计算机视觉研究中，利用行人重识别技术可以判断同一个人是否在另一个地方被另一个传感器捕捉到。计算机视觉领域的学者们形象地将针对特定行人的监控视频检索问题称为行人重识别。随着公共安全的要求和摄像头等传感器设备被大规模被应用到主题公园，学校，街道，超市等场景中，传统的依靠人工的方式进行行人识别跟踪，需要大量的人力资本投入。同时，考虑到门店的建设成本，针对门店场景的行人重识别方法应考虑到算法的实施成本，这些都对行人的识别与跟踪，特别是在行人信息的高效检索等领域提出了新的挑战。</p>
 <p>从技术上讲，实际视频监控系统的行人重识别系统可分为三个模块：行人检测，行人跟踪和行人信息检索。前两个任务是独立的计算机视觉任务，所以大家主要的工作还是最后一个模块。在行人重识别的研究中前期主要是围绕特定应用，进行特征提取，然后针对小规模数据集展开应用研究。近年来，随着数据量的增长以及深度学习研究的进一步推进，深度学习在行人识别检索的应用中取得了一定的成果。在门店场景顾客检索去重的研究中，对行人重识别提出了更高的要求。本文主要对从方法上对行人重识别做出一个大致的整理。
 <span id="more"></span></p>
@@ -437,8 +412,145 @@ Recognition, 2015, 48(10):2993-3003.</p>
       </tags>
   </entry>
   <entry>
+    <title>How to build gui with python</title>
+    <url>/2023/04/07/how-to-build-gui-with-python/</url>
+    <content><![CDATA[<p>为了方便测试我们搭建的界面和构建一下小应用，该应用获取服务器字符串，端口号，文件名（路径），并将它保存在get_filepath_from_server.py,由于本应用仅供测试使用，其代码简单如下所示：</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">helptxt = <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">get_filepath_from_server.py -file fffffff [-port number] [-server server|localhost]</span></span><br><span class="line"><span class="string">&quot;&quot;&quot;</span></span><br><span class="line">defaultServer = <span class="string">&#x27;localhost&#x27;</span></span><br><span class="line">defaultPort = <span class="string">&#x27;80&#x27;</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">parse_command_line</span>():</span><br><span class="line">    <span class="built_in">dict</span> = &#123;&#125;                          <span class="comment">#put in dict for easy finding</span></span><br><span class="line">    args = sys.argv[<span class="number">1</span>:]                <span class="comment">#skip program name at front of the args</span></span><br><span class="line">    <span class="keyword">while</span> <span class="built_in">len</span>(args) &gt;= <span class="number">2</span>:</span><br><span class="line">        <span class="built_in">dict</span>[args[<span class="number">0</span>]] = args[<span class="number">1</span>]         <span class="comment">#examle dict[&#x27;-server&#x27;]=&#x27;localhost&#x27;</span></span><br><span class="line">        args = args[<span class="number">2</span>:]</span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">dict</span></span><br><span class="line">  </span><br><span class="line"><span class="keyword">def</span> <span class="title function_">get_filepath_from_server</span>(<span class="params">server, port, file</span>):</span><br><span class="line">   <span class="keyword">return</span> server + <span class="string">&quot;:&quot;</span> + port + <span class="string">&quot;:&quot;</span> + file</span><br><span class="line">     </span><br><span class="line"><span class="keyword">def</span> <span class="title function_">main</span>(<span class="params">args</span>):</span><br><span class="line">      </span><br><span class="line">    server = args.get(<span class="string">&#x27;-server&#x27;</span>, defaultServer)</span><br><span class="line">    port = args.get(<span class="string">&#x27;-port&#x27;</span>, defaultPort)</span><br><span class="line">    filepath = args.get(<span class="string">&#x27;-file&#x27;</span>, <span class="literal">None</span>)</span><br><span class="line">    <span class="keyword">if</span> filepath == <span class="literal">None</span>:</span><br><span class="line">        <span class="built_in">print</span>(helptext)</span><br><span class="line">      </span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:</span><br><span class="line">    args = parse_command_line()</span><br><span class="line">    main(args)</span><br></pre></td></tr></table></figure>
+<span id="more"></span>
+<p>假设大家对Python3界面搭建有一个基本的了解，下面分别介绍使用行框架和命令行，网格，复用表单三种搭建界面的方法。对于追求代码通用性的应该果断舍弃前两种方案。</p>
+<p>1）使用行框架和命令行：</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">helptxt = <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">get_filepath_from_server.py -file fffffff [-port number] [-server server|localhost]</span></span><br><span class="line"><span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="keyword">import</span> sys, os</span><br><span class="line"><span class="keyword">from</span> tkinter <span class="keyword">import</span> *</span><br><span class="line"><span class="keyword">from</span> tkinter.messagebox <span class="keyword">import</span> showinfo</span><br><span class="line"> </span><br><span class="line"><span class="keyword">def</span> <span class="title function_">onReturnKey</span>():</span><br><span class="line">    cmdline = (<span class="string">&#x27;python get_filepath_from_server.py -server %s -port -%s -host %s&#x27;</span>%</span><br><span class="line">                (content[<span class="string">&#x27;File&#x27;</span>].get(),</span><br><span class="line">                content[<span class="string">&#x27;Port&#x27;</span>].get(),</span><br><span class="line">                content[<span class="string">&#x27;Server&#x27;</span>].get()))</span><br><span class="line">    os.system(cmdline)</span><br><span class="line">    showinfo(<span class="string">&#x27;getfilegui-1&#x27;</span>, <span class="string">&#x27;Process complete&#x27;</span>)</span><br><span class="line"> </span><br><span class="line">box = Tk()</span><br><span class="line">labels = [<span class="string">&#x27;Server&#x27;</span>, <span class="string">&#x27;Port&#x27;</span>, <span class="string">&#x27;File&#x27;</span>]</span><br><span class="line">content = &#123;&#125;</span><br><span class="line"><span class="keyword">for</span> label <span class="keyword">in</span> labels:</span><br><span class="line">    row = Frame(box)</span><br><span class="line">    row.pack(fill=X)</span><br><span class="line">    Label(row, text=label, width=<span class="number">6</span>).pack(side=LEFT)</span><br><span class="line">    entry = Entry(row)</span><br><span class="line">    entry.pack(side=RIGHT, expand=YES, fill=X)</span><br><span class="line">    content[label] = entry</span><br><span class="line"> </span><br><span class="line">box.title(<span class="string">&#x27;getfilegui-1&#x27;</span>)</span><br><span class="line">box.bind(<span class="string">&#x27;&lt;Return&gt;&#x27;</span>, (<span class="keyword">lambda</span> event: onReturnKey()))</span><br><span class="line">mainloop()</span><br></pre></td></tr></table></figure>
+<p>2）使用网格和函数调用：</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">helptxt = <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">get_filepath_from_server.py -file fffffff [-port number] [-server server|localhost]</span></span><br><span class="line"><span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="keyword">import</span> get_filepath_from_server</span><br><span class="line"><span class="keyword">from</span> tkinter <span class="keyword">import</span> *</span><br><span class="line"><span class="keyword">from</span> tkinter.messagebox <span class="keyword">import</span> showinfo</span><br><span class="line"> </span><br><span class="line"><span class="keyword">def</span> <span class="title function_">onSubmit</span>():</span><br><span class="line">    get_filepath_from_server.get_filepath_from_server(content[<span class="string">&#x27;Server&#x27;</span>].get(),</span><br><span class="line">                                    content[<span class="string">&#x27;Port&#x27;</span>].get(),</span><br><span class="line">                                    content[<span class="string">&#x27;File&#x27;</span>].get())</span><br><span class="line">    showinfo(<span class="string">&#x27;getfilegui-2&#x27;</span>, <span class="string">&quot;process complete&quot;</span>)</span><br><span class="line"> </span><br><span class="line">     </span><br><span class="line">box= Tk()</span><br><span class="line">labels = [<span class="string">&#x27;Server&#x27;</span>, <span class="string">&#x27;Port&#x27;</span>, <span class="string">&#x27;File&#x27;</span>]</span><br><span class="line">rownum =<span class="number">0</span></span><br><span class="line">content = &#123;&#125;</span><br><span class="line"><span class="keyword">for</span> label <span class="keyword">in</span> labels:</span><br><span class="line">    Label(box, text=label).grid(column=<span class="number">0</span>, row=rownum)</span><br><span class="line">    entry = Entry(box)</span><br><span class="line">    entry.grid(column=<span class="number">1</span>, row=rownum, sticky=E+W)</span><br><span class="line">    content[label] = entry</span><br><span class="line">    rownum += <span class="number">1</span></span><br><span class="line">     </span><br><span class="line">box.columnconfigure(<span class="number">0</span>, weight=<span class="number">0</span>)</span><br><span class="line">box.columnconfigure(<span class="number">1</span>, weight=<span class="number">1</span>)</span><br><span class="line">Button(text=<span class="string">&#x27;Submit&#x27;</span>, command=onSubmit).grid(row=rownum, column=<span class="number">0</span>, columnspan=<span class="number">2</span>)</span><br><span class="line"> </span><br><span class="line">box.title(<span class="string">&#x27;getfilegui-2&#x27;</span>)</span><br><span class="line">box.bind(<span class="string">&#x27;&lt;Return&gt;&#x27;</span>, (<span class="keyword">lambda</span> event: onSubmit()))</span><br><span class="line">mainloop()</span><br></pre></td></tr></table></figure>
+<p>3）使用可利用的表单布局类：</p>
+<p>示例代码1：</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="keyword">from</span> tkinter <span class="keyword">import</span> *</span><br><span class="line">entrysize = <span class="number">40</span></span><br><span class="line"> </span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Form</span>:</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params">self, labels, parent=<span class="literal">None</span></span>):</span><br><span class="line">        labelsize = <span class="built_in">max</span>(<span class="built_in">len</span>(x) <span class="keyword">for</span> x <span class="keyword">in</span> labels) + <span class="number">2</span></span><br><span class="line">        box = Frame(parent)</span><br><span class="line">        box.pack(expand=YES, fill=X)</span><br><span class="line">        rows = Frame(box, bd =<span class="number">2</span>, relief=GROOVE)</span><br><span class="line">        rows.pack(side=TOP, expand=YES, fill=X)</span><br><span class="line">        self.content = &#123;&#125;</span><br><span class="line">        <span class="keyword">for</span> label <span class="keyword">in</span> labels:</span><br><span class="line">            row = Frame(rows)</span><br><span class="line">            row.pack(fill=X)</span><br><span class="line">            Label(row, text=label, width=labelsize).pack(side=LEFT)</span><br><span class="line">            entry = Entry(row, width=entrysize)</span><br><span class="line">            entry.pack(side=RIGHT, expand=YES, fill=X)</span><br><span class="line">            self.content[label] = entry</span><br><span class="line">        Button(box, text=<span class="string">&#x27;Cancel&#x27;</span>, command=self.onCancel).pack(side=RIGHT)</span><br><span class="line">        Button(box, text=<span class="string">&#x27;Submit&#x27;</span>, command=self.onSubmit).pack(side=RIGHT)</span><br><span class="line">        box.master.bind(<span class="string">&#x27;&lt;Return&gt;&#x27;</span>, (<span class="keyword">lambda</span> event: self. onSubmit()))</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">onSubmit</span>(<span class="params">self</span>):</span><br><span class="line">        <span class="keyword">for</span> key <span class="keyword">in</span> self.content:</span><br><span class="line">            <span class="built_in">print</span>(key, <span class="string">&#x27;\t=&gt;\t&#x27;</span>, self.content[key].get())</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">onCancel</span>(<span class="params">self</span>):</span><br><span class="line">        Tk.quit()</span><br><span class="line"> </span><br><span class="line">         </span><br><span class="line"><span class="keyword">class</span> <span class="title class_">DynamicForm</span>(<span class="title class_ inherited__">Form</span>):    </span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params">self, labels=<span class="literal">None</span></span>):</span><br><span class="line">        labels = <span class="built_in">input</span>(<span class="string">&#x27;Enter field names:&#x27;</span>).split()</span><br><span class="line">        Form.__init__(self, labels)</span><br><span class="line">         </span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">onSubmit</span>(<span class="params">self</span>):</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&#x27;Field Values...&#x27;</span>)</span><br><span class="line">        Form.onSubmit(self)</span><br><span class="line">        self.onCancel()</span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&quot;__main__&quot;</span>:</span><br><span class="line">    <span class="keyword">import</span> sys</span><br><span class="line">    <span class="keyword">if</span> <span class="built_in">len</span>(sys.argv) == <span class="number">1</span>:</span><br><span class="line">        Form([<span class="string">&#x27;Name&#x27;</span>, <span class="string">&#x27;Age&#x27;</span>, <span class="string">&#x27;Job&#x27;</span>])</span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        DynamicForm()</span><br><span class="line">    mainloop()</span><br></pre></td></tr></table></figure>
+<p>示例代码2：</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">getfilegui.py</span></span><br><span class="line"><span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="keyword">from</span> form <span class="keyword">import</span> Form</span><br><span class="line"><span class="keyword">from</span> tkinter <span class="keyword">import</span> Tk, mainloop</span><br><span class="line"><span class="keyword">from</span> tkinter.messagebox <span class="keyword">import</span> showinfo</span><br><span class="line"><span class="keyword">import</span> get_filepath_from_server, os</span><br><span class="line"> </span><br><span class="line"><span class="keyword">class</span> <span class="title class_">GetFilePathForm</span>(<span class="title class_ inherited__">Form</span>):</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params">self, oneshot=<span class="literal">False</span></span>):</span><br><span class="line">        root = Tk()</span><br><span class="line">        root.title(<span class="string">&#x27;getfilegui&#x27;</span>)</span><br><span class="line">        labels = [<span class="string">&#x27;Server Name&#x27;</span>, <span class="string">&#x27;Port Number&#x27;</span>, <span class="string">&#x27;File&#x27;</span>]</span><br><span class="line">        Form.__init__(self, labels, root)</span><br><span class="line">        self.oneshot = oneshot</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">onSubmit</span>(<span class="params">self</span>):</span><br><span class="line">        Form.onSubmit(self)</span><br><span class="line">        portnumber = self.content[<span class="string">&#x27;Port Number&#x27;</span>].get()</span><br><span class="line">        servername = self.content[<span class="string">&#x27;Server Name&#x27;</span>].get()</span><br><span class="line">        filename = self.content[<span class="string">&#x27;File&#x27;</span>].get()</span><br><span class="line">        get_filepath_from_server.get_filepath_from_server(servername, portnumber, filename)</span><br><span class="line">        showinfo(<span class="string">&#x27;getfilegui&#x27;</span>, <span class="string">&#x27;Process Complete&#x27;</span>)</span><br><span class="line">        <span class="keyword">if</span> self.oneshot: Tk().quit()</span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:</span><br><span class="line">    GetFilePathForm()</span><br><span class="line">    mainloop()</span><br></pre></td></tr></table></figure>
+]]></content>
+      <categories>
+        <category>articles</category>
+        <category>python</category>
+      </categories>
+      <tags>
+        <tag>python</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>常见统计函数</title>
+    <url>/2023/04/07/statistic-function/</url>
+    <content><![CDATA[<h3 id="单点分布">单点分布：</h3>
+<p><span class="math display">\[ f(X = x)=\begin{cases}1, &amp; x =
+c\\0, &amp; x \neq c\end{cases} \]</span></p>
+<p>c, 为常数， 数学期望C，方差</p>
+<h3 id="两点分布">两点分布：</h3>
+<p><span class="math display">\[ f(X = k)=\begin{cases}p, &amp;
+\text{k=0}\\q, &amp; \text{k=1}\end{cases}  \]</span></p>
+<span id="more"></span>
+<p>数学期望p, 方差pq</p>
+<h3 id="二项分布-bnp">二项分布 <span
+class="math display">\[B(n,p)\]</span>:</h3>
+<p><span class="math display">\[P(X=k)=C_n^kp^kq^{n-k}, k =
+0,1,...,n\]</span></p>
+<p>数学期望p,方差pq</p>
+<h3 id="泊松分布-plambda">泊松分布 <span
+class="math display">\[P(\lambda)\]</span>:</h3>
+<p><span
+class="math display">\[P(X=k)=\frac{\lambda^k}{k!}e^{-\lambda},k =
+0,1,...,n, \lambda \gt 0\]</span></p>
+<p>数学期望<span class="math display">\[\lambda\]</span>,方差<span
+class="math display">\[\lambda\]</span></p>
+<h3 id="几何分布">几何分布：</h3>
+<p><span class="math display">\[P(X=K) = q^{k-1}p,k = 1,2,...,
+0&lt;p&lt;1, p+q =1\]</span></p>
+<h3 id="超几何分布">超几何分布</h3>
+<p><span class="math display">\[P(X=K) =
+\frac{C_M^kC_{N-M}^{n-k}}{C_N^n},k = 1,2,..., min(M,N), M \leq N
+\]</span></p>
+<p>数学期望<span class="math display">\[\frac{nM}{N}\]</span></p>
+<p>方差<span
+class="math display">\[\frac{nM}{N}(1-\frac{M}{N}).\frac{N-n}{N-1}\]</span></p>
+<h3 id="帕斯卡分布">帕斯卡分布</h3>
+<p><span class="math display">\[P(X=k)=C_{k-1}^{r-1}p^rq^{k-r},
+k=r,r+1,..., 0&lt;p&lt;1,p+q=1\]</span></p>
+<p>数学期望：<span class="math display">\[\frac{r}{p}\]</span>
+方差：<span class="math display">\[\frac{rq}{p^2}\]</span></p>
+<!-- more -->
+<h2 id="常见连续型分布">常见连续型分布</h2>
+<h3 id="均匀分布">均匀分布</h3>
+<p><span class="math display">\[ f(x)=\begin{cases}\frac{1}{b-a}, &amp;
+x \in (a,b)\\0, &amp; x \notin (a,b)\end{cases} \]</span></p>
+<h3 id="指数分布">指数分布</h3>
+<p><span class="math display">\[ f(x)=\begin{cases}\lambda e^{-\lambda
+x}, &amp; x \ge 0\\0, &amp; x \lt 0\end{cases} \]</span></p>
+<h3 id="正太分布">正太分布</h3>
+<p><span class="math display">\[ f(x)=\frac{1}{\sqrt{2\pi}
+\sigma}e^\frac{(x-u)^2}{2\sigma}, -\infty &lt; x &lt; +\infty
+\]</span></p>
+<h3 id="对数正态分布">对数正态分布</h3>
+<p><span class="math display">\[ f(x)=\begin{cases}\frac{1}{x\sigma
+\sqrt{2\pi}}e^\frac{(ln x-u)^2}{2\sigma}, &amp; -\infty &lt; x &lt;
++\infty \\0,&amp; x \le 0 \end{cases} \]</span></p>
+<h3 id="威布尔分布">威布尔分布</h3>
+<p><span class="math display">\[ f(x)=\begin{cases}\alpha\lambda
+x^{\alpha-1}e^{-\lambda x^\alpha}, &amp; x \gt 0 \\0,&amp; x \leq 0
+\end{cases} \]</span></p>
+<p>数学期望：<span
+class="math display">\[\Gamma(\frac{1}{\alpha}+1)\lambda^\frac{-1}{\alpha}\]</span>
+方差：<span
+class="math display">\[lambda^\frac{-1}{\alpha}\[\Gamma(\frac{2}{\alpha}+1)
+- \Gamma(\frac{1}{\alpha}+1)^2\]\\]</span></p>
+<h3 id="伽马分布">伽马分布</h3>
+<p><span class="math display">\[
+B(m, n) =
+\begin{cases}\frac{\beta^\alpha}{\Gamma{(\alpha)}}x^{\alpha-1}e^{-\beta
+x},
+&amp; x \geq 0 \\0, &amp; x \lt 0\end{cases}
+\]</span></p>
+<h3 id="贝塔分布">贝塔分布</h3>
+<p><span class="math display">\[
+B(m, n) =
+\begin{cases}\frac{\Gamma(a+b)}{\Gamma(a)\Gamma{(b)}}x^{\alpha-1}(1-x)^{b-1},
+&amp; 0 &lt; x &lt; 1 \\0, \text{其它}\end{cases}
+\]</span></p>
+<h3 id="卡方分布">卡方分布</h3>
+<p><span class="math display">\[
+f(x) = \begin{cases}\frac{1}{2^{n/2}\Gamma(n/2)}
+x^{n/2-1}e^{-x/2}, &amp; x \ge 0 \\0, &amp; x \lt 0\end{cases}
+\]</span></p>
+<h3 id="t分布">t分布</h3>
+<p><span class="math display">\[
+f(x)=\begin{cases}\frac{\Gamma((n+1)/2)}{\sqrt{n\pi} \Gamma{(n/2)}}
+, &amp; x \ge 0 \\0, &amp; x \lt 0
+\end{cases}
+\]</span></p>
+<h3 id="f分布">F分布</h3>
+<p><span class="math display">\[
+f(x)=\begin{cases}\frac{\Gamma((n+m)/2)}{\Gamma{(n/2)}\Gamma{(m/2)}}n^{n/2}m^{m/2}x^{n/2-1}(nx+m)^{\frac{n+m}{2}}
+, &amp; x \ge 0 \\0, &amp; x \lt 0
+\end{cases}
+\]</span></p>
+<h3 id="柯西分布">柯西分布</h3>
+<p><span class="math display">\[
+f(x)=\frac{1}{\pi}\frac{\lambda}{\lambda^2+(x-\mu)^2}, -\infty &lt; x
+&lt; +\infty \]</span></p>
+<h3 id="二维正太分布分布函数等备注">二维正太分布分布函数等，备注：</h3>
+<p><span class="math display">\[\Gamma 函数,
+\Gamma(\alpha)=\int_0^{+\infty} x^{\alpha-1}e^{-x}dx,\alpha \gt 0
+\]</span> <span class="math display">\[B(Beta) 函数, B(p,q)=\int_0^1
+x^{p-1}(1-x)^{q-1}dx,p \gt 0, q \gt 0 \]</span></p>
+]]></content>
+      <categories>
+        <category>articles</category>
+        <category>统计</category>
+      </categories>
+      <tags>
+        <tag>statistic</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>视频内容相似度算法</title>
-    <url>/2023/04/06/%E8%A7%86%E9%A2%91%E5%86%85%E5%AE%B9%E7%9B%B8%E4%BC%BC%E5%BA%A6%E7%AE%97%E6%B3%95/</url>
+    <url>/2023/04/07/%E8%A7%86%E9%A2%91%E5%86%85%E5%AE%B9%E7%9B%B8%E4%BC%BC%E5%BA%A6%E7%AE%97%E6%B3%95/</url>
     <content><![CDATA[<p>随着视频内容越来越多，通过深度模型理解视频，提取视频内容特征，建立视频搜索引擎，已经成为主流。视频内容相似度检索以及视频内容理解能力越发重要。再业务推进过程以及技术积累过程中，对调研尝试过的数据和方法，做简要的整理和剖析。北大满哥视频侵权，说明平台在视频内容审核这一块，严格意义上讲，就平台再视频版权这一块，或多或少的都需要人工运维去做支撑（依据没有运用OCR以及语义等初级的文案审核能力对头部流量视频做内容风控）。显然目前互联网企业的初衷，还在我们的"菜篮子"里，未将精力投入的科技的星辰大海，个人观点。
 <span id="more"></span> ## 视频相似问题</p>
 <h2 id="处理问题规模">处理问题规模</h2>
@@ -652,118 +764,6 @@ VSCode</a> 创作并发布</p>
         <category>视频处理</category>
         <category>数字指纹</category>
         <category>视频相似度</category>
-      </categories>
-      <tags>
-        <tag>statistic</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>常见统计函数</title>
-    <url>/2023/04/06/statistic-function/</url>
-    <content><![CDATA[<h3 id="单点分布">单点分布：</h3>
-<p><span class="math display">\[ f(X = x)=\begin{cases}1, &amp; x =
-c\\0, &amp; x \neq c\end{cases} \]</span></p>
-<p>c, 为常数， 数学期望C，方差</p>
-<h3 id="两点分布">两点分布：</h3>
-<p><span class="math display">\[ f(X = k)=\begin{cases}p, &amp;
-\text{k=0}\\q, &amp; \text{k=1}\end{cases}  \]</span></p>
-<span id="more"></span>
-<p>数学期望p, 方差pq</p>
-<h3 id="二项分布-bnp">二项分布 <span
-class="math display">\[B(n,p)\]</span>:</h3>
-<p><span class="math display">\[P(X=k)=C_n^kp^kq^{n-k}, k =
-0,1,...,n\]</span></p>
-<p>数学期望p,方差pq</p>
-<h3 id="泊松分布-plambda">泊松分布 <span
-class="math display">\[P(\lambda)\]</span>:</h3>
-<p><span
-class="math display">\[P(X=k)=\frac{\lambda^k}{k!}e^{-\lambda},k =
-0,1,...,n, \lambda \gt 0\]</span></p>
-<p>数学期望<span class="math display">\[\lambda\]</span>,方差<span
-class="math display">\[\lambda\]</span></p>
-<h3 id="几何分布">几何分布：</h3>
-<p><span class="math display">\[P(X=K) = q^{k-1}p,k = 1,2,...,
-0&lt;p&lt;1, p+q =1\]</span></p>
-<h3 id="超几何分布">超几何分布</h3>
-<p><span class="math display">\[P(X=K) =
-\frac{C_M^kC_{N-M}^{n-k}}{C_N^n},k = 1,2,..., min(M,N), M \leq N
-\]</span></p>
-<p>数学期望<span class="math display">\[\frac{nM}{N}\]</span></p>
-<p>方差<span
-class="math display">\[\frac{nM}{N}(1-\frac{M}{N}).\frac{N-n}{N-1}\]</span></p>
-<h3 id="帕斯卡分布">帕斯卡分布</h3>
-<p><span class="math display">\[P(X=k)=C_{k-1}^{r-1}p^rq^{k-r},
-k=r,r+1,..., 0&lt;p&lt;1,p+q=1\]</span></p>
-<p>数学期望：<span class="math display">\[\frac{r}{p}\]</span>
-方差：<span class="math display">\[\frac{rq}{p^2}\]</span></p>
-<!-- more -->
-<h2 id="常见连续型分布">常见连续型分布</h2>
-<h3 id="均匀分布">均匀分布</h3>
-<p><span class="math display">\[ f(x)=\begin{cases}\frac{1}{b-a}, &amp;
-x \in (a,b)\\0, &amp; x \notin (a,b)\end{cases} \]</span></p>
-<h3 id="指数分布">指数分布</h3>
-<p><span class="math display">\[ f(x)=\begin{cases}\lambda e^{-\lambda
-x}, &amp; x \ge 0\\0, &amp; x \lt 0\end{cases} \]</span></p>
-<h3 id="正太分布">正太分布</h3>
-<p><span class="math display">\[ f(x)=\frac{1}{\sqrt{2\pi}
-\sigma}e^\frac{(x-u)^2}{2\sigma}, -\infty &lt; x &lt; +\infty
-\]</span></p>
-<h3 id="对数正态分布">对数正态分布</h3>
-<p><span class="math display">\[ f(x)=\begin{cases}\frac{1}{x\sigma
-\sqrt{2\pi}}e^\frac{(ln x-u)^2}{2\sigma}, &amp; -\infty &lt; x &lt;
-+\infty \\0,&amp; x \le 0 \end{cases} \]</span></p>
-<h3 id="威布尔分布">威布尔分布</h3>
-<p><span class="math display">\[ f(x)=\begin{cases}\alpha\lambda
-x^{\alpha-1}e^{-\lambda x^\alpha}, &amp; x \gt 0 \\0,&amp; x \leq 0
-\end{cases} \]</span></p>
-<p>数学期望：<span
-class="math display">\[\Gamma(\frac{1}{\alpha}+1)\lambda^\frac{-1}{\alpha}\]</span>
-方差：<span
-class="math display">\[lambda^\frac{-1}{\alpha}\[\Gamma(\frac{2}{\alpha}+1)
-- \Gamma(\frac{1}{\alpha}+1)^2\]\\]</span></p>
-<h3 id="伽马分布">伽马分布</h3>
-<p><span class="math display">\[
-B(m, n) =
-\begin{cases}\frac{\beta^\alpha}{\Gamma{(\alpha)}}x^{\alpha-1}e^{-\beta
-x},
-&amp; x \geq 0 \\0, &amp; x \lt 0\end{cases}
-\]</span></p>
-<h3 id="贝塔分布">贝塔分布</h3>
-<p><span class="math display">\[
-B(m, n) =
-\begin{cases}\frac{\Gamma(a+b)}{\Gamma(a)\Gamma{(b)}}x^{\alpha-1}(1-x)^{b-1},
-&amp; 0 &lt; x &lt; 1 \\0, \text{其它}\end{cases}
-\]</span></p>
-<h3 id="卡方分布">卡方分布</h3>
-<p><span class="math display">\[
-f(x) = \begin{cases}\frac{1}{2^{n/2}\Gamma(n/2)}
-x^{n/2-1}e^{-x/2}, &amp; x \ge 0 \\0, &amp; x \lt 0\end{cases}
-\]</span></p>
-<h3 id="t分布">t分布</h3>
-<p><span class="math display">\[
-f(x)=\begin{cases}\frac{\Gamma((n+1)/2)}{\sqrt{n\pi} \Gamma{(n/2)}}
-, &amp; x \ge 0 \\0, &amp; x \lt 0
-\end{cases}
-\]</span></p>
-<h3 id="f分布">F分布</h3>
-<p><span class="math display">\[
-f(x)=\begin{cases}\frac{\Gamma((n+m)/2)}{\Gamma{(n/2)}\Gamma{(m/2)}}n^{n/2}m^{m/2}x^{n/2-1}(nx+m)^{\frac{n+m}{2}}
-, &amp; x \ge 0 \\0, &amp; x \lt 0
-\end{cases}
-\]</span></p>
-<h3 id="柯西分布">柯西分布</h3>
-<p><span class="math display">\[
-f(x)=\frac{1}{\pi}\frac{\lambda}{\lambda^2+(x-\mu)^2}, -\infty &lt; x
-&lt; +\infty \]</span></p>
-<h3 id="二维正太分布分布函数等备注">二维正太分布分布函数等，备注：</h3>
-<p><span class="math display">\[\Gamma 函数,
-\Gamma(\alpha)=\int_0^{+\infty} x^{\alpha-1}e^{-x}dx,\alpha \gt 0
-\]</span> <span class="math display">\[B(Beta) 函数, B(p,q)=\int_0^1
-x^{p-1}(1-x)^{q-1}dx,p \gt 0, q \gt 0 \]</span></p>
-]]></content>
-      <categories>
-        <category>articles</category>
-        <category>统计</category>
       </categories>
       <tags>
         <tag>statistic</tag>
